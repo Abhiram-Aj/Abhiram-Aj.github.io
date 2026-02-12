@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini CodePen</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+      color: #e5e7eb;
+      font-family: monospace;
+    }
+
+    header {
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #00ff88;
+      box-shadow: 0 0 10px #00ff88;
+    }
+
+    header div {
+      font-size: 1.2em;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    button {
+      background: linear-gradient(45deg, #00ff88, #00cc66);
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #000;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #00ff88;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ff88;
+    }
+
+    .editor {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: calc(100vh - 50px);
+    }
+
+    .panel {
+      border-right: 1px solid #00ff88;
+      display: flex;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .panel:last-child {
+      border-right: none;
+    }
+
+    .panel h3 {
+      margin: 0;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 1px solid #00ff88;
+      text-align: center;
+      text-shadow: 0 0 5px #00ff88;
+    }
+
+    textarea {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.8);
+      color: #00ff88;
+      border: none;
+      padding: 10px;
+      resize: none;
+      font-size: 14px;
+      outline: none;
+    }
+
+    textarea:focus {
+      box-shadow: inset 0 0 10px #00ff88;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>⚡ Mini CodePen</div>
+  <div>
+    <button onclick="preview()">Preview</button>
+    <button onclick="openHome()">Home Page</button>
+    <button onclick="defaultcode()">Default</button>
+    <button onclick="clearAll()">Clear All</button>
+  </div>
+</header>
+
+<div class="editor">
+  <div class="panel">
+    <h3>HTML</h3>
+    <textarea id="html"></textarea>
+  </div>
+  <div class="panel">
+    <h3>CSS</h3>
+    <textarea id="css"></textarea>
+  </div>
+  <div class="panel">
+    <h3>JavaScript</h3>
+    <textarea id="js"></textarea>
+  </div>
+</div>
+
+<script>
+const htmlEl = document.getElementById("html");
+const cssEl = document.getElementById("css");
+const jsEl = document.getElementById("js");
+
+/* Load saved code - check if it's the full Mini CodePen code and clear if so */
+if (localStorage.html && localStorage.html.includes("Mini CodePen")) {
+  localStorage.clear();
+}
+htmlEl.value = localStorage.html || "<h1>Hello bro 👋</h1>";
+cssEl.value = localStorage.css || "body { background:black; color:lime; text-align:center; }";
+jsEl.value = localStorage.js || "console.log('JS working');";
+
+/* Save on type */
+[htmlEl, cssEl, jsEl].forEach(el => {
+  el.addEventListener("input", () => {
+    localStorage.html = htmlEl.value;
+    localStorage.css = cssEl.value;
+    localStorage.js = jsEl.value;
+  });
+});
+
+function openHome() {
+  window.location.href = '/';
+}
+
+/* Preview */
+function preview() {
+  const win = window.open();
+  win.document.open();
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>${cssEl.value}</style>
+    </head>
+    <body>
+      ${htmlEl.value}
+      <script>${jsEl.value}<\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+/* Home - Reset to defaults */
+function defaultcode() {
+  if (confirm("Reset to default code?")) {
+    localStorage.clear();
+    htmlEl.value = "<h1>Hello bro 👋</h1>";
+    cssEl.value = "body { background:black; color:lime; text-align:center; }";
+    jsEl.value = "console.log('JS working');";
+  }
+}
+
+/* Clear All */
+function clearAll() {
+  if (confirm("Clear all code?")) {
+    htmlEl.value = "";
+    cssEl.value = "";
+    jsEl.value = "";
+    localStorage.clear();
+  }
+}
+
+/* Ctrl + Enter */
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey && e.key === "Enter") preview();
+});
+</script>
+
+</body>
+</html>

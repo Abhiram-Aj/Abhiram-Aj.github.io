@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Abhiram's personal workspace: Tech enthusiast exploring cybersecurity, Linux, and building small tools and projects." />
+  <meta name="keywords" content="Abhiram, cybersecurity, pentesting, Linux, TryHackMe, Hack The Box, web development" />
+  <meta property="og:title" content="Abhiram | Home" />
+  <meta property="og:description" content="Explore Abhiram's cybersecurity projects and experiments." />
+  <meta property="og:image" content="https://files.catbox.moe/betord.jpg" /> 
+  <title>Abhiram | Home</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"> <!-- Terminal-style font -->
+
+  <style>
+    /* ===============================
+       GLOBAL COLOR VARIABLES & THEME
+       =============================== */
+    :root {
+      --bg: #0b0f1a;          /* Dark background */
+      --bg-light: #f8fafc;    /* Light mode background */
+      --card: #12172a;        /* Card background */
+      --card-light: #ffffff;  /* Light mode card */
+      --text: #e5e7eb;        /* Main text */
+      --text-light: #0b0f1a;  /* Light mode text */
+      --muted: #9ca3af;       /* Muted text */
+      --muted-light: #6b7280; /* Light mode muted */
+      --accent: #3b82f6;      /* Blue accent */
+      --accent-secondary: #10b981; /* Green neon accent */
+      --accent-cyber: #00ff88; /* Cyber green for highlights */
+      --border: #1f2937;      /* Border */
+      --border-light: #e5e7eb; /* Light mode border */
+      --shadow: rgba(0, 0, 0, 0.35); /* Shadow */
+      --glow: 0 0 20px var(--accent-secondary); /* Neon glow */
+    }
+
+    /* Light mode overrides */
+    body.light-mode {
+      --bg: var(--bg-light);
+      --card: var(--card-light);
+      --text: var(--text-light);
+      --muted: var(--muted-light);
+      --border: var(--border-light);
+    }
+
+    /* ===============================
+       PAGE BASE STYLES
+       =============================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth; /* Smooth scrolling */
+    }
+
+    body {
+      margin: 0;
+      font-family: 'JetBrains Mono', system-ui, monospace; /* Terminal font */
+      background: linear-gradient(180deg, var(--bg), #070a14);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      animation: fadeIn 1s ease-in;
+      position: relative;
+    }
+
+    body.light-mode {
+      background: linear-gradient(180deg, var(--bg-light), #e2e8f0);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      color: var(--accent-cyber);
+      font-size: 1rem;
+      opacity: 0.1;
+      animation: float 10s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100px) rotate(360deg); }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    /* ===============================
+       DARK MODE TOGGLE
+       =============================== */
+    .toggle-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .dark-mode-toggle {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s ease;
+      font-size: 1.2rem;
+      box-shadow: var(--glow);
+    }
+
+    .dark-mode-toggle:hover {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 0 30px var(--accent);
+    }
+
+    /* ===============================
+       ABOUT SECTION
+       =============================== */
+    .about {
+      margin-bottom: 70px;
+      text-align: left;
+    }
+
+    .about h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px var(--shadow);
+      color: var(--accent-cyber);
+    }
+
+    .about h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 18px;
+      border-right: 2px solid var(--accent-secondary);
+      padding-right: 10px;
+      animation: typing 3s steps(10, end), blink-caret 0.75s step-end infinite;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--accent-secondary); }
+    }
+
+    .about p {
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 860px;
+      margin: 0 0 14px;
+      font-size: 1rem;
+    }
+
+    /* ===============================
+       SKILLS SECTION
+       =============================== */
+    .skills {
+      margin-bottom: 70px;
+    }
+
+    .skills h2 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--accent-cyber);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: 0.3s ease;
+    }
+
+    .skill-item:hover {
+      border-color: var(--accent-secondary);
+      box-shadow: var(--glow);
+      transform: scale(1.05);
+    }
+
+    .skill-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: var(--accent-cyber);
+    }
+
+    .skill-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .skill-bar {
+      background: var(--border);
+      border-radius: 5px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      width: 0;
+      animation: fillBar 2s ease-out forwards;
+    }
+
+    @keyframes fillBar {
+      to { width: var(--fill); }
+    }
+
+    /* ===============================
+       PROJECTS SECTION
+       =============================== */
+    .projects {
+      margin-bottom: 70px;
+      text-align: center;
+    }
+
+    .projects h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .projects p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ===============================
+       CARD GRID & STYLE
+       =============================== */
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .nav a:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent-secondary);
+      transform: translateY(-5px);
+      box-shadow: var(--glow);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: var(--glow); }
+      50% { box-shadow: 0 0 40px var(--accent-secondary); }
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .coming-soon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--accent-secondary);
+      color: var(--bg);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ===============================
+       LATEST UPDATES SECTION
+       =============================== */
+    .updates {
+      margin-bottom: 70px;
+    }
+
+    .updates h2 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--accent-cyber);
+    }
+
+    .update-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: 0.3s ease;
+    }
+
+    .update-item:hover {
+      border-color: var(--accent-secondary);
+      box-shadow: var(--glow);
+    }
+
+    .update-item h3 {
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .update-item p {
+      color: var(--muted);
+    }
+
+    /* ===============================
+       CONTACT SECTION
+       =============================== */
+    .contact {
+      margin-bottom: 70px;
+      text-align: center;
+    }
+
+    .contact h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--accent-cyber);
+    }
+
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .contact-form button {
+      background: var(--accent-secondary);
+      color: var(--bg);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      box-shadow: var(--glow);
+    }
+
+    .social-links {
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      margin: 0 10px;
+      color: var(--accent);
+      font-size: 1.5rem;
+      transition: 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--accent-secondary);
+      text-shadow: var(--glow);
+    }
+
+    /* ===============================
+       FOOTER
+       =============================== */
+    footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+
+    footer p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-secondary);
+      color: var(--bg);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: var(--glow);
+      transition: 0.3s ease;
+      z-index: 100;
+    }
+
+    .back-to-top:hover {
+      transform: scale(1.1);
+    }
+
+    /* ===============================
+       RESPONSIVE DESIGN
+       =============================== */
+    @media (max-width: 768px) {
+      .container {
+        padding: 40px 15px;
+      }
+
+      .about {
+        text-align: center;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .toggle-container, .back-to-top {
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated Particles Background -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Dark Mode Toggle -->
+  <div class="toggle-container">
+    <button class="dark-mode-toggle" aria-label="Toggle dark mode">🌙</button>
+  </div>
+
+  <main class="container">
+    <!-- ===============================
+         ABOUT
+         =============================== -->
+    <section class="about" id="about">
+      <h1>Abhiram A</h1>
+      <h2>About Me</h2>
+      <p>
+        Hey, I’m <strong>Abhiram</strong> 👋<br><br>
+        I’m a tech enthusiast who enjoys breaking things to understand how they work.
+        Right now, I only know the <strong>basics of cybersecurity</strong> — not a lot —
+        but I do understand core security concepts and how different pieces fit together.
+      </p>
+
+      <p>
+        I enjoy working with Linux (Kali is home 🐧) and learning through platforms like
+        <strong>TryHackMe</strong> and <strong>Hack The Box</strong>.
+        So far, I’ve studied and practiced fundamentals of
+        <strong>networking</strong>,
+        <strong>basic pentesting</strong>,
+        <strong>web & API pentesting</strong>,
+        <strong>Android app pentesting</strong>,
+        <strong>Active Directory</strong> (basic),
+        <strong>SOC fundamentals</strong>,
+        and a little about <strong>LLMs</strong>.
+      </p>
+
+      <p>
+        Most of this learning comes from the
+        <strong>ADIS (Advanced Diploma in Information Security)</strong>
+        course at <strong>Offenso Hackers Academy</strong>.
+        I’ve covered a wide range of topics, even though my hands-on depth is still
+        at a beginner level.
+      </p>
+
+      <p>
+        I use this website as a space to put what’s on my mind and what I want to build.
+        Whatever I find interesting or useful, I add to my projects section.
+        I don’t code everything from scratch — I often use AI tools to help turn ideas
+        into working pages while I focus on learning and experimenting.
+      </p>
+    </section>
+
+    <!-- ===============================
+         SKILLS
+         =============================== -->
+    <!-- ===============================
+         SKILLS
+         =============================== -->
+    <section class="skills">
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-icon">🛡️</div>
+          <h3>Cybersecurity Basics</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 60%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">🐧</div>
+          <h3>Linux (Kali)</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 70%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">🌐</div>
+          <h3>Networking</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 50%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">💻</div>
+          <h3>Web Pentesting</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 55%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">📱</div>
+          <h3>Android App Pentesting</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 45%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">🏢</div>
+          <h3>Active Directory</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 40%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">🔍</div>
+          <h3>SOC Fundamentals</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 50%;"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-icon">🤖</div>
+          <h3>LLMs</h3>
+          <div class="skill-bar"><div class="skill-fill" style="--fill: 35%;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================
+         PROJECTS
+         =============================== -->
+    <section class="projects">
+      <h2>Projects</h2>
+      <p>
+        Here are some of my ongoing experiments and tools. Click on a card to explore more—some are live, others are in development.
+      </p>
+    </section>
+
+    <!-- ===============================
+         PROJECT / NAV CARDS
+         =============================== -->
+    <section class="nav">
+
+      <a href="./codepen" aria-label="Visit CodePen experiments">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-icon">🎨</div>
+            <h3>CodePen</h3>
+            <p>UI experiments, animations, and frontend tests.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="./Maintenance" aria-label="Castle of Magic project (coming soon)">
+        <div class="card">
+          <div class="coming-soon">Coming Soon</div>
+          <div class="card-content">
+            <div class="card-icon">🏰</div>
+            <h3>Castle of Magic</h3>
+            <p>A nostalgia project recreated using HTML5 game templates.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="./ttdf" aria-label="Text to Text difference finder">
+        <div class="card">
+          <div class="coming-soon">Still in work</div>
+          <div class="card-content">
+            <div class="card-icon">📝</div>
+            <h3>Text to Text</h3>
+            <p>Text difference finder and comparison utilities.</p>
+          </div>
+        </div>
+      </a>
+      
+      <a href="./Maintenance" aria-label="View Zeva RoadMap (coming soon)">
+        <div class="card">
+          <div class="coming-soon">Coming Soon</div>
+          <div class="card-content">
+            <div class="card-icon">🛡️</div>
+            <h3>Zeva RoadMap</h3>
+            <p>Cybersecurity roadmaps for pentesting, labs, and learning paths.</p>
+          </div>
+        </div>
+      </a>
+      
+    </section>
+
+    <!-- ===============================
+         LATEST UPDATES
+         =============================== -->
+    <section class="updates">
+      <h2>Latest Updates</h2>
+      <div class="update-item">
+        <h3>Exploring LLMs in Cybersecurity</h3>
+        <p>Recently dove into how large language models can assist in threat detection and automation. Excited to build a small tool around this!</p>
+      </div>
+      <div class="update-item">
+        <h3>Completed SOC Fundamentals</h3>
+        <p>Finished the SOC module from ADIS—learning about monitoring, alerts, and incident response. Time to practice in a lab!</p>
+      </div>
+    </section>
+
+    <!-- ===============================
+         CONTACT
+         =============================== -->
+    <section class="contact">
+      <h2>Contact</h2>
+      <form id="contactForm" class="contact-form">
+        <input id="name" type="text" name="name" placeholder="Your Name" required>
+        <input id="email" type="email" name="email" placeholder="Your Email" required>
+        <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <div class="social-links">
+        <a href="https://github.com/Abhiram-Aj" aria-label="GitHub">🐙</a>
+        <a href="https://instagram.com/the.abhiramaj" aria-label="Instagram">💼</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===============================
+       FOOTER
+       =============================== -->
+  <footer>
+    <p>&copy; 2024 Abhiram-Aj. Built with ❤️ and curiosity. <a href="https://instagram.com/the.abhiramaj">Get in touch</a>.</p>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script>
+    // Dark mode toggle
+    const toggle = document.querySelector('.dark-mode-toggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      toggle.textContent = document.body.classList.contains('light-mode') ? 'L' : 'D';
+    });
+
+    // Particles animation
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.textContent = Math.random() > 0.5 ? '0' : '1';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 10 + 's';
+      particlesContainer.appendChild(particle);
+    }
+
+    // Back to top
+    const backToTop = document.querySelector('.back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTop.style.display = 'block';
+      } else {
+        backToTop.style.display = 'none';
+      }
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Konami Code Easter Egg
+    let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+    let konamiIndex = 0;
+    document.addEventListener('keydown', (e) => {
+      if (e.code === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+          alert('Konami Code Activated! 🎉 You unlocked a secret message: Keep hacking the matrix!');
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    });
+  </script>
+  <script src="./js/contact.js"></script>
+</body>
+</html>

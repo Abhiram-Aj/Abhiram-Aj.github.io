@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Under Maintenance</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: #000000; /* Pure black void */
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: fade-in 1s ease-out;
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    /* Data stream background effect */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 0, 0.1) 2px,
+        rgba(0, 255, 0, 0.1) 4px
+      );
+      animation: stream-down 3s linear infinite;
+      z-index: -1;
+    }
+    @keyframes stream-down {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    h1 {
+      font-size: 3.5em;
+      margin-bottom: 20px;
+      text-shadow: 
+        0 0 10px #00ff00,
+        0 0 20px #00ff00,
+        0 0 30px #00ff00,
+        0 0 40px #00ff00;
+      animation: morph-glow 2s ease-in-out infinite alternate, glitch-in 1s ease-out;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    @keyframes morph-glow {
+      from { 
+        text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; 
+        color: #00ff00; 
+      }
+      to { 
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; 
+        color: #00ffff; 
+      }
+    }
+    @keyframes glitch-in {
+      0% { opacity: 0; transform: translateX(-10px); }
+      50% { opacity: 0.5; transform: translateX(10px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    p {
+      font-size: 1.3em;
+      margin-bottom: 40px;
+      text-shadow: 
+        0 0 10px #00ffff,
+        0 0 20px #00ffff,
+        0 0 30px #00ffff,
+        0 0 40px #00ffff;
+      animation: pulse-text 3s ease-in-out infinite, glitch-in 1.2s ease-out 0.5s;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    @keyframes pulse-text {
+      0%, 100% { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+      50% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; }
+    }
+    .container {
+      max-width: 650px;
+      padding: 30px;
+      background: transparent; /* No black—neon aura only */
+      border-radius: 15px;
+      box-shadow: 
+        0 0 20px #00ff00,
+        0 0 40px #00ffff,
+        0 0 60px #00ff00;
+      animation: aura-breathe 4s ease-in-out infinite, fade-in 1s ease-out;
+      position: relative;
+    }
+    @keyframes aura-breathe {
+      0%, 100% { box-shadow: 0 0 20px #00ff00, 0 0 40px #00ffff; }
+      50% { box-shadow: 0 0 40px #00ff00, 0 0 80px #00ffff; }
+    }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid transparent;
+      border-top: 4px solid #00ff00;
+      border-right: 4px solid #00ffff;
+      border-radius: 50%;
+      animation: spin-trail 1s linear infinite;
+      margin: 0 auto;
+      position: relative;
+    }
+    .spinner::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 68px;
+      height: 68px;
+      border: 4px solid transparent;
+      border-bottom: 4px solid #00ff00;
+      border-left: 4px solid #00ffff;
+      border-radius: 50%;
+      animation: spin-reverse-trail 1.5s linear infinite;
+    }
+    .spinner::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: #00ff00;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px #00ff00, 0 0 20px #00ffff;
+      animation: orbit 2s linear infinite;
+    }
+    @keyframes spin-trail {
+      0% { transform: rotate(0deg); box-shadow: 0 0 10px #00ff00; }
+      50% { box-shadow: 0 0 20px #00ffff; }
+      100% { transform: rotate(360deg); box-shadow: 0 0 10px #00ff00; }
+    }
+    @keyframes spin-reverse-trail {
+      0% { transform: rotate(360deg); box-shadow: 0 0 10px #00ffff; }
+      50% { box-shadow: 0 0 20px #00ff00; }
+      100% { transform: rotate(0deg); box-shadow: 0 0 10px #00ffff; }
+    }
+    @keyframes orbit {
+      0% { transform: translate(-50%, -50%) rotate(0deg) translateX(25px); }
+      100% { transform: translate(-50%, -50%) rotate(360deg) translateX(25px); }
+    }
+    /* Orbiting particles around the container */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #00ff00;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #00ff00;
+      animation: orbit-container 5s linear infinite;
+    }
+    .particle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 10%; right: 10%; background: #00ffff; animation-delay: 1.25s; }
+    .particle:nth-child(3) { bottom: 10%; right: 10%; animation-delay: 2.5s; }
+    .particle:nth-child(4) { bottom: 10%; left: 10%; background: #00ffff; animation-delay: 3.75s; }
+    @keyframes orbit-container {
+      0% { transform: rotate(0deg) translateX(200px) rotate(0deg); }
+      100% { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
+    }
+    /* Mobile tweaks */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5em; }
+      p { font-size: 1.1em; }
+      .container { padding: 20px; }
+      .spinner { width: 50px; height: 50px; }
+      .spinner::before { width: 58px; height: 58px; }
+      .particle { animation: orbit-container 5s linear infinite; transform-origin: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Orbiting particles for dynamic effect -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
+  <div class="container">
+    <h1>Site Under Maintenance</h1>
+    <p>We're working hard to improve your experience. Please check back soon!</p>
+    <div class="spinner"></div>
+  </div>
+</body>
+</html>

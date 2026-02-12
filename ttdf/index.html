@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Text Diffrence Finder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        textarea {
+            width: 50%;
+            height: 350px;
+            background-color: white;
+            color: black;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        button {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 12px 30px;
+            background-color: #00ff00;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        button:hover {
+            background-color: #00cc00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .search-section {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        #search-input {
+            width: 300px;
+            padding: 8px;
+            background-color: white;
+            color: black;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        #search-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        .diff-container {
+            display: flex;
+        }
+        .line-numbers {
+            background-color: #111;
+            color: #00ff00;
+            padding: 20px 10px;
+            border: 2px solid #00ff00;
+            border-radius: 5px 0 0 5px;
+            box-shadow: 0 0 10px #00ff00;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            min-height: 150px;
+            min-width: 60px; /* Increased for larger numbers */
+            text-align: right;
+            white-space: pre-wrap;
+            overflow-y: auto; /* In case of many lines */
+        }
+        #diff-output {
+            background-color: white;
+            color: black;
+            border: 2px solid #00ff00;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 150px;
+            line-height: 1.5;
+            box-shadow: 0 0 10px #00ff00;
+            flex: 1;
+        }
+        #diff-output[contenteditable="true"] {
+            border-color: #00ffff;
+            box-shadow: 0 0 15px #00ffff;
+        }
+        .added {
+            background-color: #d4edda;
+            color: #155724;
+            text-shadow: 0 0 5px #00ff00;
+            cursor: pointer;
+        }
+        .removed {
+            background-color: #f8d7da;
+            color: #721c24;
+            text-decoration: line-through;
+            text-shadow: 0 0 5px #ff0000;
+            cursor: pointer;
+        }
+        .unchanged {
+            color: #333;
+            cursor: pointer;
+        }
+        mark {
+            background-color: yellow;
+            color: black;
+        }
+        .stats {
+            margin-top: 10px;
+            text-align: center;
+            color: #00ff00;
+            font-weight: bold;
+        }
+        .menu {
+            float: right;
+            margin-bottom: 10px;
+        }
+        .menu button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align: center; color: #00ff00;">&lt; Interactive Text Diff Finder /&gt;</h2>
+        
+        <div class="input-section">
+            <textarea id="original-text" placeholder="Paste original text here..."></textarea>
+            <textarea id="modified-text" placeholder="Paste modified text here..."></textarea>
+        </div>
+
+        <button onclick="computeDiff()">Find Differences</button>
+
+        <div class="menu">
+            <button onclick="saveSession()">Save Session</button>
+            <button onclick="loadSession()">Load Session</button>
+            <button onclick="toggleEditMode()">Toggle Edit Mode</button>
+            <button onclick="copyToClipboard()">Copy to Clipboard</button>
+            <button onclick="exportDiff()">Export Diff</button>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="search-input" placeholder="Search in diff..." oninput="searchAndHighlight()">
+        </div>
+
+        <div class="diff-container">
+            <div class="line-numbers" id="line-numbers"></div>
+            <div id="diff-output" contenteditable="false">Results will appear here...</div>
+        </div>
+
+        <div class="stats" id="diff-stats"></div>
+    </div>
+
+    <script>
+        // Helper to stop HTML from rendering as elements
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function computeDiff() {
+            const text1 = document.getElementById('original-text').value;
+            const text2 = document.getElementById('modified-text').value;
+            const outputDiv = document.getElementById('diff-output');
+
+            if (!text1 && !text2) {
+                outputDiv.innerHTML = "Please enter some text to compare.";
+                document.getElementById('line-numbers').innerHTML = '';
+                document.getElementById('diff-stats').innerHTML = '';
+                return;
+            }
+
+            const dmp = new diff_match_patch();
+            const diffs = dmp.diff_main(text1, text2);
+            
+            dmp.diff_cleanupSemantic(diffs);
+
+            let htmlResult = '';
+            let addedCount = 0, removedCount = 0, unchangedCount = 0;
+
+            diffs.forEach((part) => {
+                const type = part[0];
+                const text = escapeHTML(part[1]);
+                
+                let className = 'unchanged';
+                if (type === 1) {
+                    className = 'added';
+                    addedCount++;
+                } else if (type === -1) {
+                    className = 'removed';
+                    removedCount++;
+                } else {
+                    unchangedCount++;
+                }
+                
+                htmlResult += `<span class="${className}" onclick="toggleClass(this)">${text}</span>`;
+            });
+
+            outputDiv.innerHTML = htmlResult;
+            outputDiv.contentEditable = "false"; // Reset to non-editable after diff
+            updateLineNumbers();
+            document.getElementById('diff-stats').innerHTML = `Added: ${addedCount}, Removed: ${removedCount}, Unchanged: ${unchangedCount}`;
+            document.getElementById('search-input').value = ''; // Clear search
+        }
+
+        function toggleClass(element) {
+            if (element.classList.contains('added')) {
+                element.classList.remove('added');
+                element.classList.add('removed');
+                element.style.textDecoration = 'line-through';
+            } else if (element.classList.contains('removed')) {
+                element.classList.remove('removed');
+                element.classList.add('added');
+                element.style.textDecoration = 'none';
+            }
+            // Unchanged stays unchanged
+        }
+
+        function toggleEditMode() {
+            const outputDiv = document.getElementById('diff-output');
+            const isEditable = outputDiv.contentEditable === "true";
+            outputDiv.contentEditable = isEditable ? "false" : "true";
+        }
+
+        function copyToClipboard() {
+            const outputDiv = document.getElementById('diff-output');
+            let resultText = '';
+
+            if (outputDiv.contentEditable === "true") {
+                resultText = outputDiv.textContent || outputDiv.innerText;
+            } else {
+                const spans = outputDiv.querySelectorAll('span');
+                spans.forEach(span => {
+                    if (span.classList.contains('added') || span.classList.contains('unchanged')) {
+                        resultText += span.textContent;
+                    }
+                });
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(resultText).then(() => {
+                    alert('Text copied to clipboard!');
+                }).catch(err => {
+                    console.error('Modern clipboard failed: ', err);
+                    fallbackCopyTextToClipboard(resultText);
+                });
+            } else {
+                fallbackCopyTextToClipboard(resultText);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('Text copied to clipboard!');
+                } else {
+                    alert('Failed to copy to clipboard.');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed: ', err);
+                alert('Failed to copy to clipboard.');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function saveSession() {
+            const data = {
+                original: document.getElementById('original-text').value,
+                modified: document.getElementById('modified-text').value,
+                output: document.getElementById('diff-output').innerHTML,
+                editable: document.getElementById('diff-output').contentEditable,
+                stats: document.getElementById('diff-stats').innerHTML
+            };
+            localStorage.setItem('diffSession', JSON.stringify(data));
+            alert('Session saved!');
+        }
+
+        function loadSession() {
+            const data = JSON.parse(localStorage.getItem('diffSession'));
+            if (data) {
+                document.getElementById('original-text').value = data.original;
+                document.getElementById('modified-text').value = data.modified;
+                document.getElementById('diff-output').innerHTML = data.output;
+                document.getElementById('diff-output').contentEditable = data.editable;
+                document.getElementById('diff-stats').innerHTML = data.stats;
+                updateLineNumbers();
+                alert('Session loaded!');
+            } else {
+                alert('No saved session found.');
+            }
+        }
+
+        function updateLineNumbers() {
+            const outputDiv = document.getElementById('diff-output');
+            const text = outputDiv.textContent || outputDiv.innerText;
+            const lines = text.split('\n');
+            let numbers = '';
+            for (let i = 1; i <= lines.length; i++) {
+                numbers += i + '<br>'; // Use <br> for reliable line breaks
+            }
+            document.getElementById('line-numbers').innerHTML = numbers;
+        }
+
+        function searchAndHighlight() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const outputDiv = document.getElementById('diff-output');
+            let html = outputDiv.innerHTML;
+
+            // Remove existing marks
+            html = html.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
+
+            if (query) {
+                const regex = new RegExp(`(${query})`, 'gi');
+                html = html.replace(regex, '<mark>$1</mark>');
+            }
+
+            outputDiv.innerHTML = html;
+        }
+
+        function exportDiff() {
+            const outputDiv = document.getElementById('diff-output');
+            const spans = outputDiv.querySelectorAll('span');
+            let resultText = '';
+
+            spans.forEach(span => {
+                const text = span.textContent;
+                if (span.classList.contains('added')) {
+                    resultText += '+' + text;
+                } else if (span.classList.contains('removed')) {
+                    resultText += '-' + text;
+                } else {
+                    resultText += text;
+                }
+            });
+
+            const blob = new Blob([resultText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'diff_zeva.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch (e.key) {
+                    case 's':
+                        e.preventDefault();
+                        saveSession();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        loadSession();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        toggleEditMode();
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        copyToClipboard();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        document.getElementById('search-input').focus();
+                        break;
+                    case 'x':
+                        e.preventDefault();
+                        exportDiff();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
